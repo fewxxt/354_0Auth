@@ -1,26 +1,784 @@
-@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap");
+
+/* ==========================================================================
+   TOKENS
+   ========================================================================== */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  color-scheme: light dark;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --bg: #eef2f1;
+  --surface: #ffffff;
+  --surface-2: #f6f8f7;
+  --text: #0e1b18;
+  --text-soft: #5b6b67;
+  --border: #dbe3e0;
+  --border-soft: #ebf0ee;
+
+  --accent: #0b6b57;
+  --accent-hover: #08574a;
+  --accent-tint: #e3f2ed;
+  --on-accent: #ffffff;
+
+  --edit-bg: #fbf1d9;
+  --edit-text: #7a4b05;
+  --edit-hover: #f6e5b8;
+
+  --danger: #c0392b;
+  --danger-bg: #fbe9e6;
+  --danger-text: #9b2418;
+  --danger-hover: #f6d3ce;
+
+  --ring: 0 0 0 3px rgba(11, 107, 87, 0.28);
+  --shadow-sm: 0 1px 2px rgba(14, 27, 24, 0.06);
+  --shadow-md: 0 1px 2px rgba(14, 27, 24, 0.05), 0 8px 24px -8px rgba(14, 27, 24, 0.14);
+  --shadow-lg: 0 2px 4px rgba(14, 27, 24, 0.04), 0 24px 48px -16px rgba(14, 27, 24, 0.22);
+
+  --radius: 14px;
+  --radius-sm: 10px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg: #0b1412;
+    --surface: #121f1c;
+    --surface-2: #172622;
+    --text: #e8f1ee;
+    --text-soft: #8fa39e;
+    --border: #22352f;
+    --border-soft: #1b2b27;
+
+    --accent: #34c29e;
+    --accent-hover: #5fd6b6;
+    --accent-tint: #15332b;
+    --on-accent: #06201a;
+
+    --edit-bg: #3a2f12;
+    --edit-text: #f2c96b;
+    --edit-hover: #4a3b15;
+
+    --danger: #ff7a6b;
+    --danger-bg: #3b1a17;
+    --danger-text: #ff9d91;
+    --danger-hover: #4d201c;
+
+    --ring: 0 0 0 3px rgba(52, 194, 158, 0.35);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.6);
+    --shadow-lg: 0 24px 48px -16px rgba(0, 0, 0, 0.7);
   }
 }
 
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  padding: 32px 16px;
+  font-family: "IBM Plex Sans Thai", "Noto Sans Thai", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
+}
+
+/* ==========================================================================
+   MAIN CONTAINER
+   ========================================================================== */
+
+main {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: var(--shadow-lg);
+  animation: rise 0.5s var(--ease) both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 24px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+}
+
+header h1 {
+  font-size: 28px;
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+header p {
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--text-soft);
+}
+
+header > div:last-child {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+header > div:last-child > span {
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-soft);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+/* ==========================================================================
+   BUTTONS (shared)
+   ========================================================================== */
+
+button,
+a {
+  transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease,
+    box-shadow 0.18s ease, transform 0.18s var(--ease);
+}
+
+button {
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+button:active,
+a[href="/products/new"]:active {
+  transform: scale(0.97);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+}
+
+/* Login / auth */
+
+header form {
+  margin: 0;
+}
+
+header form button {
+  min-height: 40px;
+  padding: 8px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--on-accent);
+  background: var(--accent);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+}
+
+header form button:hover {
+  background: var(--accent-hover);
+}
+
+header form button.bg-red-500 {
+  color: #fff;
+  background: var(--danger);
+}
+
+header form button.bg-red-500:hover {
+  filter: brightness(0.9);
+}
+
+/* ==========================================================================
+   ACTION BAR
+   ========================================================================== */
+
+main > div:has(> a[href="/products/new"]) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+main > div:has(> a[href="/products/new"]) > a,
+main > div:has(> a[href="/products/new"]) > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 9px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+}
+
+a[href="/products/new"] {
+  color: var(--on-accent);
+  background: var(--accent);
+  box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+a[href="/products/new"]:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+main > div:has(> a[href="/products/new"]) > button {
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+main > div:has(> a[href="/products/new"]) > button:hover {
+  background: var(--accent-tint);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ==========================================================================
+   FORM CONTROLS
+   ========================================================================== */
+
+form {
+  margin-top: 18px;
+}
+
+input:not([type]),
+input[type="text"],
+input[type="search"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+input[type="url"],
+select,
+textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-soft);
+  opacity: 0.7;
+}
+
+input:hover,
+select:hover,
+textarea:hover {
+  border-color: var(--text-soft);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: var(--ring);
+}
+
+/* ==========================================================================
+   PRODUCT TABLE
+   ========================================================================== */
+
+main .overflow-x-auto {
+  margin-top: 24px;
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+}
+
+table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+thead {
+  background: var(--surface-2);
+}
+
+th {
+  position: sticky;
+  top: 0;
+  padding: 14px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  color: var(--text-soft);
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+
+td {
+  padding: 14px 18px;
+  font-size: 14px;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+tbody tr:hover {
+  background: var(--surface-2);
+}
+
+tbody tr:hover td:first-child {
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Product image */
+
+td img {
+  display: block;
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.25s var(--ease);
+}
+
+tbody tr:hover td img {
+  transform: scale(1.06);
+}
+
+/* Category badge */
+
+td span {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--accent);
+  background: var(--accent-tint);
+  border-radius: 999px;
+}
+
+/* ==========================================================================
+   EDIT / DELETE
+   ========================================================================== */
+
+a[href*="/edit"],
+a[href*="/delete"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+a[href*="/edit"] {
+  color: var(--edit-text);
+  background: var(--edit-bg);
+}
+
+a[href*="/edit"]:hover {
+  background: var(--edit-hover);
+}
+
+a[href*="/delete"] {
+  color: var(--danger-text);
+  background: var(--danger-bg);
+}
+
+a[href*="/delete"]:hover {
+  background: var(--danger-hover);
+}
+
+/* ==========================================================================
+   FORM CARD (add / edit product)
+   ========================================================================== */
+
+form:has(input[name="title"]) {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 640px;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+}
+
+form:has(input[name="title"]) h2 {
+  padding-bottom: 14px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  border-bottom: 1px solid var(--border);
+}
+
+form:has(input[name="title"]) > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+form:has(input[name="title"]) label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+form span[role="alert"] {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--danger);
+}
+
+form button[type="submit"],
+form button[type="button"] {
+  min-height: 44px;
+  padding: 9px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+}
+
+form button[type="submit"] {
+  color: var(--on-accent);
+  background: var(--accent);
+  box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+form button[type="submit"]:hover {
+  background: var(--accent-hover);
+}
+
+form button[type="button"] {
+  color: var(--text-soft);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+form button[type="button"]:hover {
+  color: var(--text);
+  background: var(--border-soft);
+}
+
+/* ==========================================================================
+   DELETE CONFIRM / STATUS / MISC
+   ========================================================================== */
+
+main > h1 {
+  margin-bottom: 8px;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+main > p,
+main p:only-child {
+  margin-bottom: 18px;
+  color: var(--text-soft);
+}
+
+[role="alert"] {
+  margin-top: 18px;
+  padding: 13px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--danger-text);
+  background: var(--danger-bg);
+  border-left: 3px solid var(--danger);
+  border-radius: var(--radius-sm);
+}
+
+.text-red-500 {
+  color: var(--danger);
+}
+
+.text-sm.text-gray-500 {
+  font-size: 13px;
+  color: var(--text-soft);
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  body {
+    padding: 12px;
+  }
+
+  main {
+    padding: 20px;
+    border-radius: 18px;
+  }
+
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  header h1 {
+    font-size: 24px;
+  }
+
+  header > div:last-child {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  main > div:has(> a[href="/products/new"]) {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 0;
+  }
+
+  main {
+    padding: 16px;
+    border-width: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  header h1 {
+    font-size: 21px;
+  }
+
+  header > div:last-child {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  header form,
+  header form button {
+    width: 100%;
+  }
+
+  form:has(input[name="title"]) {
+    padding: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   V2 FIXES (from screenshots)
+   ========================================================================== */
+
+/* The layout wraps every page in <main> twice: flatten the inner one */
+main main {
+  width: auto;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  animation: none;
+}
+
+/* Greeting text duplicated inside the logout form */
+header form > :not(button) {
+  display: none;
+}
+
+/* Select: custom arrow instead of the native Safari gradient */
+select {
+  -webkit-appearance: none;
+  appearance: none;
+  padding-right: 44px;
+  cursor: pointer;
+  background-color: var(--surface);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235b6b67' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 16px;
+}
+
+textarea {
+  min-height: 120px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+/* Search / filter bar: one tidy row */
+form:has(select):not(:has(input[name="title"])) {
+  display: grid;
+  grid-template-columns: minmax(220px, 2fr) minmax(110px, 1fr) minmax(150px, 1fr) auto;
+  gap: 14px;
+  align-items: end;
+  margin-top: 20px;
+  padding: 18px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+form:has(select):not(:has(input[name="title"])) label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-soft);
+}
+
+/* Table polish */
+td {
+  font-variant-numeric: tabular-nums;
+}
+
+td:last-child {
+  white-space: nowrap;
+}
+
+td:last-child a + a,
+td:last-child button + a,
+td:last-child a + button {
+  margin-left: 6px;
+}
+
+/* Delete-confirm page: centered card instead of a horizontal row */
+main > div:has(img):not(:has(table)) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  max-width: 480px;
+  margin: 8px auto;
+  padding: 36px 32px;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow-md);
+}
+
+main > div:has(img):not(:has(table)) img {
+  width: min(220px, 100%);
+  height: auto;
+  padding: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+main > div:has(img):not(:has(table)) h1 {
+  font-size: 24px;
+}
+
+main > div:has(img):not(:has(table)) p {
+  margin: 0;
+  color: var(--text-soft);
+}
+
+main > div:has(img):not(:has(table)) button,
+main > div:has(img):not(:has(table)) a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 9px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+}
+
+main > div:has(img):not(:has(table)) button {
+  color: #fff;
+  background: var(--danger);
+}
+
+main > div:has(img):not(:has(table)) button:hover {
+  filter: brightness(0.92);
+}
+
+main > div:has(img):not(:has(table)) a {
+  color: var(--text-soft);
+  border: 1px solid var(--border);
+}
+
+main > div:has(img):not(:has(table)) a:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+@media (max-width: 768px) {
+  form:has(select):not(:has(input[name="title"])) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  form:has(select):not(:has(input[name="title"])) {
+    grid-template-columns: 1fr;
+  }
 }
